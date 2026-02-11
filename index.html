@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="D1Ks - Professional Search Engine">
+    <title>D1Ks - Professional Search Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <nav class="top-nav">
+            <div class="social-icons">
+                <a href="https://www.instagram.com" target="_blank" class="social-icon" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.twitter.com" target="_blank" class="social-icon" aria-label="X/Twitter">
+                    <i class="fab fa-x-twitter"></i>
+                </a>
+                <a href="https://www.github.com" target="_blank" class="social-icon" aria-label="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+            <div class="more-menu">
+                <button id="moreBtn" class="more-button" aria-label="More options">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="search-container">
+            <h1 class="logo">D1Ks</h1>
+            <div class="search-wrapper">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search the web..." class="search-input"
+                        aria-label="Search input" autocomplete="off">
+                    <button id="searchBtn" class="search-button" aria-label="Search">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
+            </div>
+            <div class="search-options">
+                <button id="advancedSearchBtn" class="advanced-search-btn">
+                    <i class="fas fa-sliders-h"></i>
+                    Advanced Search
+                </button>
+                <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </section>
+
+        <section class="results-container" id="resultsContainer" style="display: none;" aria-live="polite">
+            <div class="search-results" id="searchResults"></div>
+            <div class="pagination" id="pagination" role="navigation" aria-label="Search results pagination"></div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#privacy" class="footer-link">Privacy Policy</a>
+                <a href="#terms" class="footer-link">Terms of Service</a>
+                <a href="#contact" class="footer-link">Contact</a>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 D1Ks. All rights reserved.</p>
+            </div>
+        </div>
+
+        <div class="easter-egg">
+            <div class="arrows-container">
+                <div class="arrow arrow-top"></div>
+                <div class="arrow arrow-middle"></div>
+                <div class="arrow arrow-bottom"></div>
+            </div>
+            <div class="easter-egg-box" title="DEFINITLY NOT A TROLL">
+                <span class="question-marks">???</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Advanced Search Modal -->
+    <div id="advancedSearchModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Advanced Search</h2>
+                <button class="modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exactPhrase">Exact Phrase:</label>
+                    <input type="text" id="exactPhrase" placeholder="Enter exact phrase">
+                </div>
+                <div class="form-group">
+                    <label for="excludeWords">Exclude Words:</label>
+                    <input type="text" id="excludeWords" placeholder="Words to exclude">
+                </div>
+                <div class="form-group">
+                    <label for="dateRange">Date Range:</label>
+                    <select id="dateRange">
+                        <option value="">Any time</option>
+                        <option value="day">Past 24 hours</option>
+                        <option value="week">Past week</option>
+                        <option value="month">Past month</option>
+                        <option value="year">Past year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="resultType">Result Type:</label>
+                    <select id="resultType">
+                        <option value="">All results</option>
+                        <option value="news">News</option>
+                        <option value="images">Images</option>
+                        <option value="videos">Videos</option>
+                        <option value="shopping">Shopping</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="region">Region:</label>
+                    <select id="region">
+                        <option value="">Any region</option>
+                        <option value="us">United States</option>
+                        <option value="uk">United Kingdom</option>
+                        <option value="ca">Canada</option>
+                        <option value="au">Australia</option>
+                    </select>
+                </div>
+                <button id="applyAdvancedSearch" class="modal-btn">Apply Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>Search Preferences</h3>
+                    <div class="setting-item">
+                        <label for="safeSearch">Safe Search:</label>
+                        <select id="safeSearch">
+                            <option value="off">Off</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="strict">Strict</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="resultsPerPage">Results per page:</label>
+                        <select id="resultsPerPage">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="language">Language:</label>
+                        <select id="language">
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>Search History</h3>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="saveHistory" checked>
+                            Save search history
+                        </label>
+                    </div>
+                    <button id="clearHistory" class="modal-btn secondary">Clear History</button>
+                </div>
+                <div class="settings-section">
+                    <h3>Keyboard Shortcuts</h3>
+                    <div class="shortcut-list">
+                        <div class="shortcut-item">
+                            <kbd>Ctrl</kbd> + <kbd>K</kbd> - Focus search
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Ctrl</kbd> + <kbd>/</kbd> - Open advanced search
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Ctrl</kbd> + <kbd>T</kbd> - Toggle theme
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Escape</kbd> - Close modals
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- More Options Modal -->
+    <div id="moreModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Account Options</h2>
+                <button class="modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <button id="createAccountBtn" class="modal-option-btn">
+                    <i class="fas fa-user-plus"></i>
+                    Create Account
+                </button>
+                <button id="signInBtn" class="modal-option-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+                <button id="settingsBtn" class="modal-option-btn">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

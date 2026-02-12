@@ -43,15 +43,42 @@ A professional, modern search engine with advanced features including:
 ## 📦 Deployment
 
 This website is deployed on GitHub Pages and accessible at:
-[https://yourusername.github.io/d1ks-search-engine](https://yourusername.github.io/d1ks-search-engine)
+https://Mistwald.github.io/D1ks-search-engine
 
-## 🎮 Easter Egg
+## Professional Search Engine roadmap
 
-Click the mysterious "???" in the bottom-right corner for a surprise! 🎵
+This repository now includes several scaffolds and improvements toward a production-ready search experience.
 
-## 📄 License
+- Frontend improvements: PWA manifest, service worker (`/sw.js`), `robots.txt`, `sitemap.xml`, improved results styling.
+- Local mock search with pagination (already implemented in `script.js`).
+- Optional server proxy scaffold: `server/index.js` — use this to safely call paid search APIs (set `BING_API_KEY` env var).
+- GitHub Actions workflow to publish to GitHub Pages on `main` (`.github/workflows/deploy.yml`).
 
-MIT License - Feel free to use and modify for your projects.
+Planned next steps (can implement sequentially):
+
+1. Connect a paid search API (Bing/Google) via the server proxy for high-quality, real-world results.
+2. Deploy a self-hosted search engine (MeiliSearch) and add a simple crawler to index content.
+3. Create a scalable crawler + indexer with URL prioritization, deduplication, and ranking signals.
+4. Add analytics, monitoring, and automated tests.
+
+How to run the server scaffold (optional):
+
+1. Install dependencies:
+
+```bash
+cd server
+npm install express node-fetch cors
+```
+
+2. Start the server (configure `BING_API_KEY` if you plan to proxy to Bing):
+
+```bash
+BING_API_KEY=your_key node index.js
+```
+
+3. Use `/api/search/proxy` to POST `{ "q": "your query" }` from your frontend.
+
+If you'd like, I can continue and implement the MeiliSearch indexer and crawler next — tell me to proceed and I will scaffold and deploy it.
 
 ---
 

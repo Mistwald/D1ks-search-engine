@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://Mistwald.github.io/D1ks-search-engine/sitemap.xml

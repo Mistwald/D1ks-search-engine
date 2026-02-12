@@ -83,3 +83,38 @@ If you'd like, I can continue and implement the MeiliSearch indexer and crawler 
 ---
 
 **Built with ❤️ by D1Ks Team**
+
+## MeiliSearch & Crawler (local setup)
+
+This repo includes a MeiliSearch scaffold and a simple crawler to index pages locally.
+
+1. Start MeiliSearch via Docker Compose:
+
+```bash
+MEILI_MASTER_KEY=masterKey docker-compose up -d
+```
+
+2. Start the server (proxies and Meili endpoints):
+
+```bash
+cd server
+npm install
+MEILI_HOST=http://localhost:7700 MEILI_MASTER_KEY=masterKey node index.js
+```
+
+3. Run the crawler to index seed URLs:
+
+```bash
+python3 -m pip install -r crawler/requirements.txt
+python3 crawler/crawl.py crawler/seeds.txt http://localhost:3000
+```
+
+4. Search the Meili index via:
+
+POST http://localhost:3000/api/search/meili
+Body: { "q": "your query", "limit": 10, "offset": 0 }
+
+Notes:
+- The crawler is minimal — it's a starting point. For production you'd add politeness, rate-limiting, deduplication, sitemaps handling, and scheduling.
+- Replace `MEILI_MASTER_KEY` with a strong secret in production.
+

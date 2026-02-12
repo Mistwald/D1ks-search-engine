@@ -83,7 +83,13 @@
         </section>
 
         <section class="results-container" id="resultsContainer" style="display: none;" aria-live="polite">
-            <button id="backToSearch" class="back-to-search" style="display:none;">Back to search</button>
+            <div class="results-header">
+                <button id="homeBtn" class="home-btn" aria-label="Return to home" style="display:none;">
+                    <i class="fas fa-home"></i>
+                    Home
+                </button>
+                <button id="backToSearch" class="back-to-search" style="display:none;">Back to search</button>
+            </div>
             <div class="search-results" id="searchResults"></div>
             <div class="pagination" id="pagination" role="navigation" aria-label="Search results pagination"></div>
         </section>

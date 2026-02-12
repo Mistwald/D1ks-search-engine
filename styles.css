@@ -359,19 +359,75 @@ body.dark-theme .loading-shimmer {
     outline-offset: 2px;
 }
 
-.back-to-search {
-    display: inline-block;
-    margin-bottom: 12px;
-    padding: 8px 12px;
-    background: #003d7a;
+.results-header {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.home-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #003d7a 0%, #002855 100%);
     color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.home-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 61, 122, 0.3);
+}
+
+.home-btn:focus {
+    outline: 3px solid #ffbf47;
+}
+
+.back-to-search {
+    display: inline-block;
+    padding: 10px 14px;
+    background: rgba(0, 61, 122, 0.1);
+    color: #003d7a;
+    border: 1px solid #003d7a;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.back-to-search:hover {
+    background: rgba(0, 61, 122, 0.15);
 }
 
 .back-to-search:focus {
     outline: 3px solid #ffbf47;
+}
+
+body.dark-theme .home-btn {
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+}
+
+body.dark-theme .home-btn:hover {
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+body.dark-theme .back-to-search {
+    background: rgba(100, 150, 200, 0.1);
+    color: #66b3ff;
+    border-color: #66b3ff;
+}
+
+body.dark-theme .back-to-search:hover {
+    background: rgba(100, 150, 200, 0.2);
 }
 
 /* Focus animations */

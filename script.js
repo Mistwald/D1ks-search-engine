@@ -90,12 +90,6 @@ class D1ksSearchEngine {
         document.getElementById('saveHistory').addEventListener('change', (e) => this.toggleHistorySaving(e.target.checked));
         document.getElementById('resultsPerPage').addEventListener('change', (e) => this.updateResultsPerPage(e.target.value));
 
-        // Easter egg - Rickroll
-        easterEgg.addEventListener('click', () => this.rickroll());
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
-
         // Back to search button (in results view)
         const backToSearchBtn = document.getElementById('backToSearch');
         if (backToSearchBtn) {
@@ -105,6 +99,22 @@ class D1ksSearchEngine {
                 resultsContainer.style.display = 'none';
                 searchContainer.style.display = 'block';
                 backToSearchBtn.style.display = 'none';
+                document.getElementById('homeBtn').style.display = 'none';
+                document.getElementById('searchInput').focus();
+            });
+        }
+
+        // Home button (in results view)
+        const homeBtn = document.getElementById('homeBtn');
+        if (homeBtn) {
+            homeBtn.addEventListener('click', () => {
+                const resultsContainer = document.getElementById('resultsContainer');
+                const searchContainer = document.querySelector('.search-container');
+                resultsContainer.style.display = 'none';
+                searchContainer.style.display = 'block';
+                homeBtn.style.display = 'none';
+                backToSearchBtn.style.display = 'none';
+                document.getElementById('searchInput').value = '';
                 document.getElementById('searchInput').focus();
             });
         }
@@ -285,12 +295,20 @@ class D1ksSearchEngine {
         const currentResults = filteredResults.slice(startIndex, endIndex);
 
         // Clear and add loading animation
-        searchResults.innerHTML = '<div class="loading-shimmer" style="height: 100px; border-radius: 8px; margin-bottom: 20px;"></div>'.repeat(3);
+        searchResults.innerHTML = '';
+        for (let i = 0; i < 3; i++) {
+            const shimmer = document.createElement('div');
+            shimmer.className = 'loading-shimmer';
+            shimmer.style.height = '100px';
+            shimmer.style.borderRadius = '8px';
+            shimmer.style.marginBottom = '20px';
+            searchResults.appendChild(shimmer);
+        }
 
         // Simulate loading delay for animation effect
         setTimeout(() => {
             this.displayResultsContent(query, currentResults, totalPages);
-        }, 300);
+        }, 500);
     }
 
     displayResultsContent(query, currentResults, totalPages) {
@@ -466,6 +484,12 @@ class D1ksSearchEngine {
         // Show results container, hide search container
         resultsContainer.style.display = 'block';
         searchContainer.style.display = 'none';
+
+        // Show home and back-to-search buttons
+        const homeBtn = document.getElementById('homeBtn');
+        const backToSearchBtn = document.getElementById('backToSearch');
+        if (homeBtn) homeBtn.style.display = 'inline-flex';
+        if (backToSearchBtn) backToSearchBtn.style.display = 'inline-block';
 
         // Use last fetched results if they match this query, otherwise fallback to mock filter
         let filteredResults = [];

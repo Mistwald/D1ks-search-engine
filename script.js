@@ -9,6 +9,9 @@ class D1ksSearchEngine {
         this.selectedSuggestionIndex = -1;
         this.isDarkTheme = localStorage.getItem('theme') === 'dark';
         this.settings = this.loadSettings();
+        this.useRealAPI = true; // try real search API (DuckDuckGo); falls back to mock results
+        this.lastResults = [];
+        this.lastResultsQuery = '';
         this.init();
     }
 
@@ -94,7 +97,7 @@ class D1ksSearchEngine {
         document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
     }
 
-    performSearch() {
+    async performSearch() {
         const searchInput = document.getElementById('searchInput');
         const query = searchInput.value.trim();
 
@@ -106,14 +109,42 @@ class D1ksSearchEngine {
         // Add to search history
         this.addToSearchHistory(query);
 
+        this.currentPage = 1;
+
         // Check cache first
         const cacheKey = `${query}_${this.currentPage}`;
         if (this.searchCache.has(cacheKey)) {
             this.displayCachedResults(cacheKey);
+            this.hideSuggestions();
             return;
         }
 
-        this.currentPage = 1;
+        // Try real API, fallback to mock filtering
+        let fetched = [];
+        if (this.useRealAPI) {
+            try {
+                fetched = await this.fetchRealSearch(query);
+            } catch (e) {
+                console.warn('Real search failed, falling back to mock results', e);
+                fetched = [];
+            }
+        }
+
+        if (!fetched || fetched.length === 0) {
+            // fallback to local mock filtering
+            fetched = this.mockResults.filter(result =>
+                result.title.toLowerCase().includes(query.toLowerCase()) ||
+                result.description.toLowerCase().includes(query.toLowerCase())
+            );
+        }
+
+        // Store last results for pagination/display
+        this.lastResults = fetched;
+        this.lastResultsQuery = query;
+
+        // Cache initial page results
+        this.cacheResults(`${query}_${this.currentPage}`, { query, data: fetched });
+
         this.displayResults(query);
         this.hideSuggestions();
     }
@@ -400,11 +431,16 @@ class D1ksSearchEngine {
         resultsContainer.style.display = 'block';
         searchContainer.style.display = 'none';
 
-        // Filter results based on query (simple mock filtering)
-        let filteredResults = this.mockResults.filter(result =>
-            result.title.toLowerCase().includes(query.toLowerCase()) ||
-            result.description.toLowerCase().includes(query.toLowerCase())
-        );
+        // Use last fetched results if they match this query, otherwise fallback to mock filter
+        let filteredResults = [];
+        if (this.lastResults && this.lastResultsQuery === query) {
+            filteredResults = this.lastResults;
+        } else {
+            filteredResults = this.mockResults.filter(result =>
+                result.title.toLowerCase().includes(query.toLowerCase()) ||
+                result.description.toLowerCase().includes(query.toLowerCase())
+            );
+        }
 
         // Apply advanced filters if any
         if (this.advancedFilters) {
@@ -414,7 +450,7 @@ class D1ksSearchEngine {
             }
         }
 
-        // Cache the results
+        // Cache this page's results (object with query + data)
         const cacheKey = `${query}_${this.currentPage}`;
         this.cacheResults(cacheKey, { query, data: filteredResults });
 
@@ -649,7 +685,9 @@ class D1ksSearchEngine {
 
     // Search result caching
     cacheResults(query, results) {
-        const cacheKey = `${query}_${this.currentPage}`;
+        // `query` may already be a composite cache key (e.g. `${q}_${page}`),
+        // but to remain compatible with existing calls we honor that.
+        const cacheKey = `${query}`;
         this.searchCache.set(cacheKey, results);
 
         // Limit cache size
@@ -661,7 +699,56 @@ class D1ksSearchEngine {
 
     displayCachedResults(cacheKey) {
         const results = this.searchCache.get(cacheKey);
-        this.displayResultsFromData(results.query, results.data);
+        if (results && results.query) {
+            this.displayResultsFromData(results.query, results.data);
+        }
+    }
+
+    // Fetch simple results from DuckDuckGo Instant Answer API (no API key required).
+    // Note: If the API is blocked by CORS in some environments this will fail
+    // and the code will gracefully fall back to local mock results.
+    async fetchRealSearch(query) {
+        const endpoint = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1`;
+        try {
+            const res = await fetch(endpoint);
+            if (!res.ok) throw new Error('Network response not ok');
+            const data = await res.json();
+
+            const results = [];
+
+            if (data.AbstractURL || data.AbstractText) {
+                results.push({
+                    title: data.Heading || query,
+                    url: data.AbstractURL || '#',
+                    description: data.AbstractText || ''
+                });
+            }
+
+            const topics = data.RelatedTopics || [];
+            const flatten = (arr) => {
+                const out = [];
+                arr.forEach(item => {
+                    if (item.Topics) {
+                        item.Topics.forEach(t => out.push(t));
+                    } else {
+                        out.push(item);
+                    }
+                });
+                return out;
+            };
+
+            const flat = flatten(topics);
+            flat.forEach(t => {
+                if (t && t.FirstURL && t.Text) {
+                    results.push({ title: t.Text, url: t.FirstURL, description: '' });
+                }
+            });
+
+            return results.slice(0, 100);
+        } catch (err) {
+            console.warn('DuckDuckGo fetch failed:', err);
+            return [];
+        }
     }
 
     generateMockResults() {

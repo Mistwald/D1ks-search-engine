@@ -1,4 +1,4 @@
-const CACHE_NAME = 'd1ks-v1';
+const CACHE_NAME = 'd1ks-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

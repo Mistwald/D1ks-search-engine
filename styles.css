@@ -331,6 +331,49 @@ body.dark-theme .loading-shimmer {
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
+/* Skip link (visible when focused) */
+.skip-link {
+    position: absolute;
+    left: -999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+.skip-link:focus {
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    width: auto;
+    height: auto;
+    padding: 8px 12px;
+    background: #003d7a;
+    color: white;
+    border-radius: 6px;
+    z-index: 9999;
+}
+
+/* Improved focus styles for accessibility */
+:focus {
+    outline: 3px solid #ffbf47;
+    outline-offset: 2px;
+}
+
+.back-to-search {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: #003d7a;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.back-to-search:focus {
+    outline: 3px solid #ffbf47;
+}
+
 /* Focus animations */
 .search-box:focus-within {
     animation: glowPulse 2s ease-in-out infinite;

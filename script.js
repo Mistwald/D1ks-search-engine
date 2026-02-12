@@ -95,6 +95,19 @@ class D1ksSearchEngine {
 
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
+
+        // Back to search button (in results view)
+        const backToSearchBtn = document.getElementById('backToSearch');
+        if (backToSearchBtn) {
+            backToSearchBtn.addEventListener('click', () => {
+                const resultsContainer = document.getElementById('resultsContainer');
+                const searchContainer = document.querySelector('.search-container');
+                resultsContainer.style.display = 'none';
+                searchContainer.style.display = 'block';
+                backToSearchBtn.style.display = 'none';
+                document.getElementById('searchInput').focus();
+            });
+        }
     }
 
     async performSearch() {
@@ -294,6 +307,9 @@ class D1ksSearchEngine {
                     <p>Try different keywords or check your spelling</p>
                 </div>
             `;
+            // focus the no-results container for screen readers
+            const noResults = searchResults.querySelector('.no-results');
+            if (noResults) noResults.tabIndex = -1, noResults.focus();
         } else {
             currentResults.forEach((result, index) => {
                 const resultElement = document.createElement('div');
@@ -304,8 +320,28 @@ class D1ksSearchEngine {
                     <div class="result-url">${result.url}</div>
                     <div class="result-description">${result.description}</div>
                 `;
+                // make result focusable and keyboard-operable
+                resultElement.tabIndex = 0;
+                resultElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        const link = resultElement.querySelector('a');
+                        if (link) link.click();
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        const next = resultElement.nextElementSibling;
+                        if (next && next.classList.contains('result-item')) next.focus();
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        const prev = resultElement.previousElementSibling;
+                        if (prev && prev.classList.contains('result-item')) prev.focus();
+                    }
+                });
                 searchResults.appendChild(resultElement);
             });
+
+            // focus first result for accessibility
+            const first = searchResults.querySelector('.result-item');
+            if (first) first.focus();
         }
 
         // Display pagination with animation
@@ -467,6 +503,7 @@ class D1ksSearchEngine {
         const prevBtn = document.createElement('button');
         prevBtn.className = 'page-btn';
         prevBtn.textContent = 'Previous';
+        prevBtn.setAttribute('aria-label', 'Previous page');
         prevBtn.disabled = this.currentPage === 1;
         prevBtn.addEventListener('click', () => {
             if (this.currentPage > 1) {
@@ -488,8 +525,10 @@ class D1ksSearchEngine {
         for (let i = startPage; i <= endPage; i++) {
             const pageBtn = document.createElement('button');
             pageBtn.className = 'page-btn';
+            pageBtn.setAttribute('aria-label', `Page ${i}`);
             if (i === this.currentPage) {
                 pageBtn.classList.add('active');
+                pageBtn.setAttribute('aria-current', 'page');
             }
             pageBtn.textContent = i;
             pageBtn.addEventListener('click', () => {
@@ -503,6 +542,7 @@ class D1ksSearchEngine {
         const nextBtn = document.createElement('button');
         nextBtn.className = 'page-btn';
         nextBtn.textContent = 'Next';
+        nextBtn.setAttribute('aria-label', 'Next page');
         nextBtn.disabled = this.currentPage === totalPages;
         nextBtn.addEventListener('click', () => {
             if (this.currentPage < totalPages) {

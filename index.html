@@ -17,6 +17,7 @@
 </head>
 
 <body>
+    <a href="#searchInput" class="skip-link">Skip to search</a>
     <header>
         <nav class="top-nav">
             <div class="social-icons">
@@ -40,7 +41,7 @@
         </nav>
     </header>
 
-    <main>
+    <main role="main">
         <section class="search-container">
             <a href="https://www.d1ks.com" class="logo" aria-label="D1Ks home">D1Ks</a>
             <div class="search-wrapper">
@@ -65,6 +66,7 @@
         </section>
 
         <section class="results-container" id="resultsContainer" style="display: none;" aria-live="polite">
+            <button id="backToSearch" class="back-to-search" style="display:none;">Back to search</button>
             <div class="search-results" id="searchResults"></div>
             <div class="pagination" id="pagination" role="navigation" aria-label="Search results pagination"></div>
         </section>
